@@ -1,0 +1,29 @@
+#let x = `Or ([`Bool true, `Bool false]) in
+#let y = `And ([x, `Bool false]) in
+#let z = `Not (`And ([`Or ([x, y]), `Bool true])) in
+#let a = `Or ([y, z]) in
+#let b = `Not (a) in
+let b = `And ([`And ([`Bool true, `Bool true]), `And ([`And ([`Bool false, `Bool false]), `Bool true])])
+in
+let rec eval e =
+match e with
+| `Bool b -> b
+| `Not e ->
+  let v = eval e in
+  (match v with
+  | true -> false
+  | false -> true
+  end
+  )
+| `Or (lst) ->
+  (match lst with
+  | hd :: tl :: [] -> (eval hd) or (eval tl)
+  end
+  )
+| `And (lst) ->
+  (match lst with
+  | hd :: tl :: [] -> (eval hd) and (eval tl)
+  end
+  )
+end
+in eval b
