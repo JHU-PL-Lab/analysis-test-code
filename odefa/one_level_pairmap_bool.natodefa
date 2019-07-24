@@ -1,8 +1,3 @@
-# EXPECT-WELL-FORMED
-# EXPECT-ANALYSIS-STACK-IS 10ddpa
-# EXPECT-ANALYSIS-LOOKUP-FROM-END ~result {false}
-# EXPECT-ANALYSIS-INCONSISTENT-AT record_proj~13 record_proj~15 binop~21
-
 let pair_first p =
   p.first
 in

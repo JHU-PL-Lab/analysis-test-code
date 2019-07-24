@@ -1,14 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2018 Fraunhofer IEM, Paderborn, Germany.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Johannes Spaeth - initial API and implementation
- *******************************************************************************/
 package boomerang.example;
 
 public class InterpreterExample1 {
@@ -19,7 +8,6 @@ public class InterpreterExample1 {
         FflatExpr andExpr = new FAnd(boo1, boo2);
         FflatExpr orAndExpr = new FOr(andExpr, andExpr);
         FflatExpr andOrAndExpr = new FAnd (orAndExpr, orAndExpr);
-//        FflatExpr evalRes = evaluate(andOrAndExpr);
         FflatExpr evalRes2 = evaluate(orAndExpr);
         Boolean result_val = evalRes2.getValue();
         queryFor(evalRes2);
@@ -126,37 +114,7 @@ public class InterpreterExample1 {
             return null;
         }
     }
-//	}
-//
-//	private static class FInt extends FflatExpr {
-//
-//		private int value;
-//
-//		public FInt(int value) {
-//			this.value = value;
-//		}
-//
-//		public String getNodeType () {
-//			return "INT";
-//		}
-//
-//		@Override
-//		public int getValue () {
-//			return value;
-//		}
-//
-//		@Override
-//		public <T> T getLeft() {
-//			return null;
-//		}
-//
-//		@Override
-//		public <T> T getRight() {
-//			return null;
-//		}
-//
-//	}
-
+    
     public static FflatExpr evaluate (FflatExpr expr) {
 
         AstNodeType nodeType = expr.getNodeType();
