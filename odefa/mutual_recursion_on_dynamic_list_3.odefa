@@ -132,5 +132,5 @@ list_make = list_maker list_maker;
 list_1 = list_make len_div_2;
 main_setup_1 = fun_straight_up fun_straight_up;
 main_setup_2 = main_setup_1 fun_opposite;
-lets_go = main_setup_2 list_1;
-lets_go_list_2 = main_setup_2 list_2;
+result = main_setup_2 list_1;
+result_2 = main_setup_2 list_2;
