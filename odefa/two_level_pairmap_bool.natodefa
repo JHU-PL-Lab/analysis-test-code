@@ -17,5 +17,6 @@ let inc n =
 in
 let res_nested_pair = pair_map (pair_map inc) pair in
 let res_pair = res_nested_pair.first in
-let res = pair.first in
-res.second
+#let res = pair.first in
+#res.second
+res_pair.second
