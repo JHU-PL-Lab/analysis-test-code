@@ -1,0 +1,42 @@
+let rec myIntListMaker curr_num =
+  if curr_num == 0 then []
+  else 
+    let next = myIntListMaker (curr_num - 1) in 
+    curr_num :: next
+in 
+
+let new_int = 5 in 
+let int_list_1 = myIntListMaker new_int in 
+
+let inc_fun = 
+  (fun curr_myint -> 
+    let one = 1 in 
+    curr_myint + one 
+  ) 
+in 
+
+let int_to_bool_conversion_fun = 
+  (fun curr_myint -> 
+    if (curr_myint < 0) then (false) 
+    else (true) 
+  )
+in 
+
+let rec list_map mapper_fun lst = 
+  match lst with 
+  | [] -> 
+    []
+  | hd :: tl -> 
+    let new_hd = mapper_fun hd in 
+    let new_tl = list_map mapper_fun tl in 
+    new_hd :: new_tl
+  end
+in 
+
+let result_1 = list_map inc_fun int_list_1 in 
+let result_2 = list_map int_to_bool_conversion_fun int_list_1 in 
+match result_1 with 
+| [] -> []
+| r_head :: r_tail -> r_head 
+end
+

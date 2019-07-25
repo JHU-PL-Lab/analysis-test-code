@@ -1,0 +1,52 @@
+one = 1; 
+mb_true = true;
+mb_false = false; 
+
+pair_one = {first = one, second = one};
+
+pair_two = {first = pair_one, second = pair_one}; 
+
+inc_fun = 
+  fun curr_myint -> 
+    (
+      dummy_1 = curr_myint + 1; 
+    );
+
+int_to_bool_conversion_fun = 
+  fun itb_curr_myint -> 
+    (
+      zero = 0;
+      cond = 0 < itb_curr_myint;
+      dummy_2 = cond ~ true ? 
+	  fun dummy_3 -> (dummy_4 = mb_true;) : 
+	  fun dummy_5 -> (dummy_6 = mb_false;);
+    );
+
+fst = fun p2 -> (x0 = p2.first);
+snd = fun p3 -> (x1 = p3.second);
+pmap = fun f ->
+        (x2 = fun p4 ->
+              (x3 = fst p4;
+               x4 = snd p4;
+               x5 = f x3;
+               x6 = f x4;
+               x7 = {first = x5, second = x6};
+              )
+          );
+
+pmap_inc_lv1 = pmap inc_fun; 
+pmap_inc_lv2 = pmap pmap_inc_lv1;
+
+pmap_itb_lv1 = pmap int_to_bool_conversion_fun; 
+pmap_itb_lv2 = pmap pmap_itb_lv1;
+
+result_two_pair_int = pmap_inc_lv2 pair_two; 
+result_two_pair_bool = pmap_itb_lv2 pair_two;
+
+# get the first element of the result for both --> pair
+result_two_pair_int_first = fst result_two_pair_int;
+result_two_pair_bool_first = fst result_two_pair_bool;
+
+# get the first element of the inner pair 
+result_int = fst result_two_pair_int_first;
+result_bool = fst result_two_pair_bool_first;  
