@@ -1,23 +1,23 @@
-one = 1; 
+one = 1;
 mb_true = true;
-mb_false = false; 
+mb_false = false;
 
 pair_one = {first = one, second = one};
-pair_one_bool = {first = mb_true, second = mb_false}; 
+pair_one_bool = {first = mb_true, second = mb_false};
 
-inc_fun = 
-  fun curr_myint -> 
+inc_fun =
+  fun curr_myint ->
     (
-      dummy_1 = curr_myint + 1; 
+      dummy_1 = curr_myint + one;
     );
 
-int_to_bool_conversion_fun = 
-  fun itb_curr_myint -> 
+int_to_bool_conversion_fun =
+  fun itb_curr_myint ->
     (
       zero = 0;
-      cond = 0 < itb_curr_myint;
-      dummy_2 = cond ~ true ? 
-	  fun dummy_3 -> (dummy_4 = mb_true;) : 
+      cond = zero < itb_curr_myint;
+      dummy_2 = cond ~ true ?
+	  fun dummy_3 -> (dummy_4 = mb_true;) :
 	  fun dummy_5 -> (dummy_6 = mb_false;);
     );
 
@@ -33,11 +33,11 @@ pmap = fun f ->
               )
           );
 
-pmap_inc = pmap inc_fun; 
-result_pair_int = pmap_inc pair_one; 
+pmap_inc = pmap inc_fun;
+result_pair_int = pmap_inc pair_one;
 
-pmap_itb = pmap int_to_bool_conversion_fun; 
-result_pair_bool = pmap_itb pair_one; 
+pmap_itb = pmap int_to_bool_conversion_fun;
+result_pair_bool = pmap_itb pair_one;
 
-result_pair_int_first = fst result_pair_int; 
+result_pair_int_first = fst result_pair_int;
 result_pair_bool_first = fst result_pair_bool;
