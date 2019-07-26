@@ -7,6 +7,20 @@ public class TestUtils {
         LinkedList<Abs_type> tail;
     }
 
+    // function for dynamic list access
+    public static <T> T listAccess(LinkedList<T> list_to_search, int index) {
+        if (index == 0) {
+            T head = list_to_search.head;
+            return head;
+        }
+        {
+            int new_index = index - 1;
+            LinkedList<T> new_list_to_search = list_to_search.tail;
+            T result = listAccess(new_list_to_search, new_index);
+            return result;
+        }
+    }
+
     // function that makes homogenious lists
     public static <T> LinkedList<T> listMaker (T element, int numTimes) {
 
@@ -66,12 +80,12 @@ public class TestUtils {
             return result_boolean;
         }
 
-	public MyBoolean not() { 
-	    boolean curr_val = this.getValue(); 
-	    boolean result_val = ! curr_val;
-	    MyBoolean result_boolean = new MyBoolean(result_val);
-	    return result_boolean;
-	}
+        public MyBoolean not() {
+            boolean curr_val = this.getValue();
+            boolean result_val = ! curr_val;
+            MyBoolean result_boolean = new MyBoolean(result_val);
+            return result_boolean;
+        }
     }
 
     public static class MyInteger extends AbstractValue {
