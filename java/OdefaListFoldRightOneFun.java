@@ -5,7 +5,7 @@ import java.util.function.Function;
 
 import static boomerang.example.TestUtils.*;
 
-public class OdefaTestListFoldRightOneFun {
+public class OdefaListFoldRightOneFun {
 
     public static void main(String... args) {
         int elm_int_val = 1;
