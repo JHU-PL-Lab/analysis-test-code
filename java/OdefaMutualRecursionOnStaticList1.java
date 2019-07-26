@@ -37,14 +37,12 @@ public class OdefaMutualRecursionOnStaticList1 {
         list_create_4.head = t;
         list_create_4.tail = list_create_3;
 
-        LinkedList<MyBoolean> alt_list_1 = list_create_4;
-
         LinkedList<MyBoolean> list_create_5 = new LinkedList<>();
         list_create_5.head = f;
-        list_create_5.tail = tail_rec;
+        list_create_5.tail = list_create_4;
 
         LinkedList<MyBoolean> list_create_6 = new LinkedList<>();
-        list_create_6.head = f;
+        list_create_6.head = t;
         list_create_6.tail = list_create_5;
 
         LinkedList<MyBoolean> list_create_7 = new LinkedList<>();
@@ -52,10 +50,18 @@ public class OdefaMutualRecursionOnStaticList1 {
         list_create_7.tail = list_create_6;
 
         LinkedList<MyBoolean> list_create_8 = new LinkedList<>();
-        list_create_8.head = f;
+        list_create_8.head = t;
         list_create_8.tail = list_create_7;
 
-        LinkedList<MyBoolean> alt_list_2 = list_create_8;
+        LinkedList<MyBoolean> list_create_9 = new LinkedList<>();
+        list_create_9.head = f;
+        list_create_9.tail = list_create_8;
+
+        LinkedList<MyBoolean> list_create_10 = new LinkedList<>();
+        list_create_10.head = t;
+        list_create_10.tail = list_create_9;
+
+        LinkedList<MyBoolean> alt_list_1 = list_create_10;
 
         // mutual recursion routine
         List<Function<LinkedList<MyBoolean>, MyBoolean>> f_list = new ArrayList<>();
@@ -84,7 +90,7 @@ public class OdefaMutualRecursionOnStaticList1 {
                     LinkedList<MyBoolean> alt_list_tail = alt_list.tail;
                     if (alt_list_tail == null) {
                         boolean g_t_val = true;
-                        MyBoolean g_t = new MyBoolean(g_t_val);
+                        MyBoolean g_t = new MyBoolean(t_val);
                         return g_t;
                     }
                     {
@@ -104,10 +110,9 @@ public class OdefaMutualRecursionOnStaticList1 {
 
         Function<LinkedList<MyBoolean>, MyBoolean> fun_f = f_list.get(zero);
 
-        MyBoolean res_1 = fun_f.apply(alt_list_1);
-        MyBoolean res_2 = fun_f.apply(alt_list_2);
+        MyBoolean res = fun_f.apply(alt_list_1);
 
-        queryFor(res_1);
+        queryFor(res);
 
     }
 
