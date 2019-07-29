@@ -4,7 +4,7 @@ import java.util.function.Function;
 
 import static boomerang.example.TestUtils.*;
 
-public class SPDSTestListFoldRightOneList {
+public class TestListFoldRightOneList {
 
     public static void main (String... args) {
         int list_elm_val = 1;
