@@ -18,39 +18,45 @@ public class TestListFoldLeftOneFun {
         LinkedList<MyInteger> list_1 = listMaker(list_elm, len);
         LinkedList<MyInteger> list_2 = myIntListMaker(len);
 
-        Function<Pair<MyInteger, MyInteger>, MyInteger> sum_fun =
-                ((Pair<MyInteger, MyInteger> j_pair) ->
-                {
-                    MyInteger first_val = j_pair.getFirst();
-                    MyInteger second_val = j_pair.getSecond();
-                    return first_val.add(second_val);
-                }
-                );
-
+        SumFun sum_fun = new SumFun();
 
 //          MyInteger fact_result = factorial (new_int);
 
-        MyInteger lf_result = listFoldLeft(sum_fun, acc_1, list_1);
+        Object lf_result = listFoldLeft(sum_fun, acc_1, list_1);
 //        MyInteger fact_result2 = factorial (new_int);
 
-        MyInteger lf_result_2 = listFoldLeft(sum_fun, acc_2, list_1);
+        Object lf_result_2 = listFoldLeft(sum_fun, acc_2, list_2);
 
         queryFor(lf_result);
 
     }
 
+    private static class SumFun implements Function<Pair<Object, Object>, Object> {
+        public Object apply(Pair<Object, Object> curr) {
+            Object curr_first = curr.getFirst();
+            Object curr_second = curr.getSecond();
+            if (curr_second instanceof MyInteger) {
+                MyInteger curr_acc = (MyInteger) curr_first;
+                MyInteger curr_myint = (MyInteger) curr_second;
+                return curr_acc.add(curr_myint);
+            }
+            {
+                return null;
+            }
+        }
+
+    }
 
 
 
-    private static <Acc, Elem> Acc listFoldLeft(Function<Pair<Acc, Elem>, Acc> fun, Acc acc, LinkedList<Elem> lst) {
+    private static <Acc, Elem> Acc listFoldLeft(Function<Pair<Acc, Elem>, Acc> fun, Acc acc, LinkedList<? extends Elem> lst) {
         if (lst == null) {
             return acc;
         } {
             Elem curr_head = lst.head;
-            LinkedList<Elem> curr_tail = lst.tail;
+            LinkedList<? extends Elem> curr_tail = lst.tail;
             Pair<Acc, Elem> fun_param = new Pair<> (acc, curr_head);
 
-            // want to apply the function here... syntax?
             Acc new_acc = fun.apply(fun_param);
 
             return listFoldLeft(fun, new_acc, curr_tail);

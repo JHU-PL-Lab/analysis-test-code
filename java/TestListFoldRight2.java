@@ -1,12 +1,13 @@
 package boomerang.example;
 
 import java.util.function.Function;
+
 import static boomerang.example.TestUtils.*;
 
 // This test confirms that conflation does NOT occur when there are two iterations of List.fold_left,
 // one with integer list/acc (fun int -> int), and one with boolean list/acc (fun bool -> bool)
 
-public class TestListFoldLeft2 {
+public class TestListFoldRight2 {
 
 
     private int fact_result;
@@ -23,9 +24,9 @@ public class TestListFoldLeft2 {
         SumFun sum_fun = new SumFun();
         AndFun and_fun = new AndFun();
 
-        Object lf_result = listFoldLeft(sum_fun, base_acc_int, new_int_list);
+        Object lf_result = listFoldRight(sum_fun, base_acc_int, new_int_list);
 
-        Object lf_result_2 = listFoldLeft(and_fun, base_acc_bool, new_bool_list);
+        Object lf_result_2 = listFoldRight(and_fun, base_acc_bool, new_bool_list);
 
         System.out.println(lf_result);
         System.out.println(lf_result_2);
@@ -45,7 +46,7 @@ public class TestListFoldLeft2 {
                 MyInteger curr_myint = (MyInteger) curr_second;
                 return curr_acc.add(curr_myint);
             }
-            {
+            else {
                 return null;
             }
         }
@@ -61,23 +62,25 @@ public class TestListFoldLeft2 {
                 MyBoolean curr_mybool = (MyBoolean) curr_second;
                 return curr_acc.and(curr_mybool);
             }
-            {
+            else {
                 return null;
             }
         }
     }
 
-    private static <Acc, Elem> Acc listFoldLeft(Function<Pair<Acc, Elem>, Acc> fun, Acc acc, LinkedList<? extends Elem> lst) {
+    private static <Acc, Elem> Acc listFoldRight(Function<Pair<Acc, Elem>, Acc> fun, Acc acc, LinkedList<? extends Elem> lst) {
         if (lst == null) {
             return acc;
-        } {
+        }
+        else {
             Elem curr_head = lst.head;
             LinkedList<? extends Elem> curr_tail = lst.tail;
-            Pair<Acc, Elem> fun_param = new Pair<> (acc, curr_head);
 
-            Acc new_acc = fun.apply(fun_param);
+            Acc new_acc = listFoldRight(fun, acc, curr_tail);
+            Pair<Acc, Elem> fun_param = new Pair<>(new_acc, curr_head);
 
-            return listFoldLeft(fun, new_acc, curr_tail);
+            Acc result = fun.apply(fun_param);
+            return result;
 
         }
     }

@@ -8,76 +8,26 @@ public class TestPairMapOneLevel {
 
     public static void main(String... args) {
         MyInteger one = new MyInteger(1);
-        MyBoolean mb_true = new MyBoolean(true);
-        MyBoolean mb_false = new MyBoolean(false);
 
         Pair<MyInteger, MyInteger> pair_one = new Pair<>(one, one);
-        Pair<MyBoolean, MyBoolean> pair_one_bool = new Pair<>(mb_true, mb_false);
 
-        Pair<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger> > pair_two =
-                new Pair<>(pair_one, pair_one);
-
-//        Pair<Pair<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger>>,
-//                Pair<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger> > >
-//                pair_three =
-//                new Pair<>(pair_two, pair_two);z
-
-        Function<MyInteger, MyInteger> inc_fun =
-                ((MyInteger curr_myint) ->
-                {
-                    int val = curr_myint.getValue();
-
-                    return curr_myint.add(one);
-                }
-                );
+        IncFun inc_fun = new IncFun();
+        IntToBoolFun int_bool_fun = new IntToBoolFun();
 
 
-        Function<MyInteger, MyBoolean> int_to_bool_conversion_fun =
-                ((MyInteger curr_myint) ->
-                {
-                    int val = curr_myint.getValue();
-                    if (val > 0) {
-                        MyBoolean new_boolean_true = new MyBoolean(true);
-                        return new_boolean_true;
-                    } {
-                    MyBoolean new_boolean_false = new MyBoolean(false);
-                    return new_boolean_false;
-                }
+        Function<Function<? super Object, ? extends Object>, Function<Pair<? extends Object, ? extends Object>, Pair<Object, Object>>>
+                pairmap = new PairMap<>();
+        Pair<Object, Object> result_pair_int = pairmap.apply(inc_fun).apply(pair_one);
 
-                }
-                );
+        Pair<Object, Object> result_pair_bool = pairmap.apply(int_bool_fun).apply(pair_one);
 
-        Function<MyBoolean, MyBoolean> flip_fun =
-                ((MyBoolean curr_mybool) ->
-                {
-                    boolean val = curr_mybool.getValue();
-                    if (val == true) {
-                        return new MyBoolean(false);
-                    } {
-                        return new MyBoolean(true);
-                }
-                }
-                );
+        Object result_pair_int_first = result_pair_int.getFirst();
+        Object result_pair_bool_first = result_pair_bool.getFirst();
 
+        System.out.println(result_pair_int_first);
+        System.out.println(result_pair_bool_first);
 
-        Function<Function<MyInteger, MyInteger>, Function<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger>>>
-                pmlv1_int_to_int = pairMap();
-        Pair<MyInteger, MyInteger> result_pair_int = pmlv1_int_to_int.apply(inc_fun).apply(pair_one);
-
-        Function<Function<MyInteger, MyBoolean>, Function<Pair<MyInteger, MyInteger>, Pair<MyBoolean, MyBoolean>>>
-                pmlv1_int_to_bool = pairMap();
-        Pair<MyBoolean, MyBoolean> result_pair_bool = pmlv1_int_to_bool.apply(int_to_bool_conversion_fun).apply(pair_one);
-
-//        Function<Function<MyBoolean, MyBoolean>, Function<Pair<MyBoolean, MyBoolean>, Pair<MyBoolean, MyBoolean>>>
-//                pmlv1_bool_to_bool = pairMap();
-//        Pair<MyBoolean, MyBoolean> result_pair_bool = pmlv1_bool_to_bool.apply(flip_fun).apply(pair_one_bool);
-
-
-        MyInteger result_pair_int_first = result_pair_int.getFirst();
-        MyBoolean result_pair_bool_first = result_pair_bool.getFirst();
-
-
-        queryFor(result_pair_int_first);
+        queryFor(result_pair_bool);
 
     }
 
@@ -85,38 +35,83 @@ public class TestPairMapOneLevel {
 
     }
 
-    private static <T, U> Function<Function<T,U>, Function<Pair<T,T>, Pair<U,U>>> pairMap () {
-        Function<Function<T,U>, Function<Pair<T,T>, Pair<U,U>>> pairmap_fun =
-                (Function<T,U> fun) -> {
-                    Function<Pair<T,T>, Pair<U,U>> return_fun =
-                            (Pair<T, T> curr_pair) -> {
-                                T curr_first = curr_pair.getFirst();
-                                T curr_second = curr_pair.getSecond();
-                                U new_first = fun.apply(curr_first);
-                                U new_second = fun.apply(curr_second);
-                                Pair<U, U> new_pair = new Pair<>(new_first, new_second);
-                                return new_pair;
-                            };
-                    return return_fun;
+    private static final class PairMap<T, U> implements
+            Function<Function<? super T, ? extends U>, Function<Pair<? extends T, ? extends T>, Pair<U, U>>> {
+        private static final class InnerPairMap<T, U> implements Function<Pair<? extends T, ? extends T>, Pair<U, U>> {
+            private final Function<? super T, ? extends U> fun;
 
-                };
+            private InnerPairMap(Function<? super T, ? extends U> fun) {
+                this.fun = fun;
+            }
 
-        return pairmap_fun;
+            @Override
+            public Pair<U, U> apply(Pair<? extends T, ? extends T> curr_pair) {
+                T curr_first = curr_pair.getFirst();
+                T curr_second = curr_pair.getSecond();
+                U new_first = fun.apply(curr_first);
+                U new_second = fun.apply(curr_second);
+                Pair<U, U> new_pair = new Pair<>(new_first, new_second);
+                return new_pair;
+            }
+        }
+
+        @Override
+        public Function<Pair<? extends T, ? extends T>, Pair<U, U>> apply(Function<? super T, ? extends U> fun) {
+            Function<Pair<? extends T, ? extends T>, Pair<U, U>> return_fun =
+                    new InnerPairMap<T, U>(fun);
+            return return_fun;
+        }
     }
 
-    private static <T, U> Function<Pair<T,T>, Pair<U,U>> testPairMap (Function<T, U> fun) {
+    private static class IncFun implements Function<Object, Object> {
+        public Object apply(Object curr) {
+            if (curr instanceof MyInteger) {
+                MyInteger curr_myint = (MyInteger) curr;
+                MyInteger one = new MyInteger(1);
+                return curr_myint.add(one);
+            }
+            {
+                return null;
+            }
+        }
 
-                    Function<Pair<T,T>, Pair<U,U>> return_fun =
-                            (Pair<T, T> curr_pair) -> {
-                                T curr_first = curr_pair.getFirst();
-                                T curr_second = curr_pair.getSecond();
-                                U new_first = fun.apply(curr_first);
-                                U new_second = fun.apply(curr_second);
-                                Pair<U, U> new_pair = new Pair<>(new_first, new_second);
-                                return new_pair;
-                            };
-                    return return_fun;
+    }
 
+    private static class MultFun implements Function<Object, Object> {
+        public Object apply(Object curr) {
+            if (curr instanceof MyInteger ) {
+                MyInteger curr_myint = (MyInteger) curr;
+                MyInteger one = new MyInteger(1);
+                return curr_myint.multiply(one);
+            }
+            else {
+                return null;
+            }
+        }
+
+    }
+
+    private static class IntToBoolFun implements Function<Object, Object> {
+        public Object apply(Object curr) {
+            if (curr instanceof MyInteger) {
+                MyBoolean tr = new MyBoolean(true);
+                MyInteger curr_myint = (MyInteger) curr;
+                int val = curr_myint.getValue();
+                if (val > 0) {
+                    MyBoolean new_boolean_true = new MyBoolean(true);
+                    MyBoolean tr_result = new_boolean_true.and(tr);
+                    return tr_result;
+                }
+                else {
+                    MyBoolean new_boolean_false = new MyBoolean(false);
+                    MyBoolean fl_result = new_boolean_false.or(tr);
+                    return fl_result;
+                }
+            }
+            {
+                return null;
+            }
+        }
     }
 
 

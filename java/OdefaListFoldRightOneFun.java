@@ -20,41 +20,44 @@ public class OdefaListFoldRightOneFun {
         LinkedList<MyInteger> list_1 = listMaker(elm_int, len);
         LinkedList<MyBoolean> list_2 = listMaker(elm_bool, len);
 
-        // this function assumes that accumulator and int have the
-        // same type, and either they are MyInteger or MyBoolean
-        Function<Pair<Object, Object>, Object> fun_1 =
-                ((Pair<Object, Object> p_pair) ->
-                {
-                    Object accumulator = p_pair.getFirst();
-                    Object item = p_pair.getSecond();
-                    if (item instanceof MyInteger)
-                    {
-                        MyInteger int_item = (MyInteger) item;
-                        MyInteger int_accumulator = (MyInteger) accumulator;
-                        MyInteger int_result = int_accumulator.add(int_item);
-                        return int_result;
-                    }
-                    else {
-                        MyBoolean bool_item = (MyBoolean) item;
-                        MyBoolean bool_accumulator = (MyBoolean) accumulator;
-                        MyBoolean bool_result = bool_accumulator.or(bool_item);
-                        return bool_result;
-                    }
-                }
-                );
+        Fun1 fun_1 = new Fun1();
 
-        MyInteger lf_result = (MyInteger) listFoldRight(fun_1, acc_1, list_1);
+        Object lf_result = listFoldRight(fun_1, acc_1, list_1);
 
-        MyBoolean lf_result_2 = (MyBoolean) listFoldRight(fun_1, acc_2, list_2);
+        Object lf_result_2 = listFoldRight(fun_1, acc_2, list_2);
 
-        queryFor(lf_result_2);
+        System.out.println(lf_result);
+        System.out.println(lf_result_2);
 
+        queryFor(lf_result);
+
+    }
+
+    private static class Fun1 implements Function<Pair<Object, Object>, Object> {
+        public Object apply (Pair<Object, Object> p_pair) {
+            Object accumulator = p_pair.getFirst();
+            Object item = p_pair.getSecond();
+            if (item instanceof MyInteger)
+            {
+                MyInteger int_item = (MyInteger) item;
+                MyInteger int_accumulator = (MyInteger) accumulator;
+                MyInteger int_result = int_accumulator.add(int_item);
+                return int_result;
+            }
+            else {
+                MyBoolean bool_item = (MyBoolean) item;
+                MyBoolean bool_accumulator = (MyBoolean) accumulator;
+                MyBoolean bool_result = bool_accumulator.or(bool_item);
+                return bool_result;
+            }
+        }
     }
 
     private static <Acc, Elem> Acc listFoldRight(Function<Pair<Acc, Elem>, Acc> fun, Acc acc, LinkedList<? extends Elem> lst) {
         if (lst == null) {
             return acc;
-        } {
+        }
+        else {
             Elem curr_head = lst.head;
             LinkedList<? extends Elem> curr_tail = lst.tail;
 

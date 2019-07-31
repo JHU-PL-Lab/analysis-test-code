@@ -16,38 +16,20 @@ public class TestListFoldRightOneList {
         int len = 5;
         LinkedList<MyInteger> list_1 = listMaker(list_elm, len);
 
-
-        Function<Pair<MyInteger, MyInteger>, MyInteger> fun_1 =
-                ((Pair<MyInteger, MyInteger> j_pair) ->
-                {
-                    MyInteger accumulator = j_pair.getFirst();
-                    MyInteger item = j_pair.getSecond();
-                    MyInteger res_match_int = accumulator.add(item);
-                    return res_match_int;
-                }
-                );
-        Function<Pair<MyBoolean, MyInteger>, MyBoolean> fun_2 =
-                ((Pair<MyBoolean, MyInteger> j_pair) ->
-                {
-                    MyBoolean accumulator_2 = j_pair.getFirst();
-                    MyInteger item_2 = j_pair.getSecond();
-                    boolean true_bool = true;
-                    MyBoolean a_bool = new MyBoolean(true_bool);
-                    MyBoolean a_combination_of_bool = a_bool.and(accumulator_2);
-                    return a_combination_of_bool;
-                }
-                );
-
-
+        Fun1 fun_1 = new Fun1();
+        Fun2 fun_2 = new Fun2();
 
 //          MyInteger fact_result = factorial (new_int);
 
-        MyInteger lf_result = listFoldRight(fun_1, acc_1, list_1);
+        Object lf_result = listFoldRight(fun_1, acc_1, list_1);
 //        MyInteger fact_result2 = factorial (new_int);
 
-        MyBoolean lf_result_2 = listFoldRight(fun_2, acc_2, list_1);
+        Object lf_result_2 = listFoldRight(fun_2, acc_2, list_1);
 
-        queryFor(lf_result_2);
+        System.out.println(lf_result);
+        System.out.println(lf_result_2);
+
+        queryFor(lf_result);
 
     }
 
@@ -55,12 +37,48 @@ public class TestListFoldRightOneList {
 
     }
 
-    private static <Acc, Elem> Acc listFoldRight(Function<Pair<Acc, Elem>, Acc> fun, Acc acc, LinkedList<Elem> lst) {
+    private static class Fun1 implements Function<Pair<Object, Object>, Object> {
+        public Object apply(Pair<Object, Object> j_pair) {
+            Object j_pair_fst = j_pair.getFirst();
+            Object j_pair_snd = j_pair.getSecond();
+            if (j_pair_snd instanceof MyInteger) {
+                MyInteger accumulator = (MyInteger) j_pair_fst;
+                MyInteger item = (MyInteger) j_pair_snd;
+                MyInteger res_match_int = accumulator.add(item);
+                return res_match_int;
+            }
+            else {
+                return null;
+            }
+        }
+    }
+
+    private static class Fun2 implements Function<Pair<Object, Object>, Object> {
+        public Object apply(Pair<Object, Object> j_pair) {
+            Object j_pair_fst = j_pair.getFirst();
+            Object j_pair_snd = j_pair.getSecond();
+            if (j_pair_snd instanceof MyInteger) {
+                MyBoolean accumulator_2 = (MyBoolean) j_pair_fst;
+                MyInteger item_2 = (MyInteger) j_pair_snd;
+                boolean true_bool = true;
+                MyBoolean a_bool = new MyBoolean(true_bool);
+                MyBoolean a_combination_of_bool = a_bool.and(accumulator_2);
+                return a_combination_of_bool;
+            }
+            else {
+                return null;
+            }
+        }
+    }
+
+
+    private static <Acc, Elem> Acc listFoldRight(Function<Pair<Acc, Elem>, Acc> fun, Acc acc, LinkedList<? extends Elem> lst) {
         if (lst == null) {
             return acc;
-        } {
+        }
+        else {
             Elem curr_head = lst.head;
-            LinkedList<Elem> curr_tail = lst.tail;
+            LinkedList<? extends Elem> curr_tail = lst.tail;
 
             Acc new_acc = listFoldRight(fun, acc, curr_tail);
             Pair<Acc, Elem> fun_param = new Pair<>(new_acc, curr_head);
@@ -70,4 +88,5 @@ public class TestListFoldRightOneList {
 
         }
     }
+
 }

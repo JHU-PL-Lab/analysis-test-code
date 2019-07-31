@@ -18,36 +18,23 @@ public class OdefaTwoLevelPairmapInt {
         Pair<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger> > pair_two =
                 new Pair<>(pair_one, pair_one);
 
-        Function<MyInteger, MyInteger> inc_fun =
-                ((MyInteger curr_myint) ->
-                {
-                    int val = curr_myint.getValue();
-                    int one_val = 1;
-                    MyInteger one = new MyInteger(one_val);
-                    return curr_myint.add(one);
-                }
-                );
+        IncFun inc_fun = new IncFun();
 
-        Function<Function<MyInteger, MyInteger>, Function<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger>>>
-                pmlv1_int_to_int = pairMap();
+        Function<Function<? super Object, ?>, Function<Pair<?, ?>, Pair<Object,Object>>>
+                pairmap_lv1 = new PairMap<>();
 
-        Function<Function<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger>>,
-                Function<Pair<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger>>,
-                        Pair<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger>>>> pmlv2_int_to_int = pairMap();
+        Function<Function<? super Pair<?, ?>, ? extends Pair<Object, Object>>,
+                Function<Pair<? extends Pair<?, ?>, ? extends Pair<?, ?>>, Pair<Pair<Object, Object>,Pair<Object, Object>>>>
+                pairmap_lv2 = new PairMap<>();
 
-        Function<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger>> one_pmap =
-                pmlv1_int_to_int.apply(inc_fun);
+        Pair<Pair<Object, Object>, Pair<Object, Object>> call =
+                pairmap_lv2.apply(pairmap_lv1.apply(inc_fun)).apply(pair_two);
 
-        Function<Pair<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger>>,
-                Pair<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger>>> two_pmap =
-                pmlv2_int_to_int.apply(one_pmap);
+        Pair<Object, Object> intermediate_res = call.getFirst();
 
-        Pair<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger>> call =
-                two_pmap.apply(pair_two);
+        Object res = intermediate_res.getSecond();
 
-        Pair<MyInteger, MyInteger> intermediate_res = call.getFirst();
-
-        MyInteger res = intermediate_res.getSecond();
+        System.out.println(res);
 
         queryFor(res);
 
@@ -57,39 +44,47 @@ public class OdefaTwoLevelPairmapInt {
 
     }
 
-    private static <T, U> Function<Function<T,U>, Function<Pair<T,T>, Pair<U,U>>> pairMap () {
-        Function<Function<T,U>, Function<Pair<T,T>, Pair<U,U>>> pairmap_fun =
-                (Function<T,U> fun) -> {
-                    Function<Pair<T,T>, Pair<U,U>> return_fun =
-                            (Pair<T, T> curr_pair) -> {
-                                T curr_first = curr_pair.getFirst();
-                                T curr_second = curr_pair.getSecond();
-                                U new_first = fun.apply(curr_first);
-                                U new_second = fun.apply(curr_second);
-                                Pair<U, U> new_pair = new Pair<>(new_first, new_second);
-                                return new_pair;
-                            };
-                    return return_fun;
-
-                };
-
-        return pairmap_fun;
+    private static class IncFun implements Function<Object, Object> {
+        public Object apply(Object curr) {
+            if (curr instanceof MyInteger) {
+                MyInteger curr_myint = (MyInteger) curr;
+                int val = curr_myint.getValue();
+                int one_val = 1;
+                MyInteger one = new MyInteger(one_val);
+                return curr_myint.add(one);
+            }
+            else {
+                return null;
+            }
+        }
     }
 
-    private static <T, U> Function<Pair<T,T>, Pair<U,U>> testPairMap (Function<T, U> fun) {
+    private static final class PairMap<T, U> implements
+            Function<Function<? super T, ? extends U>, Function<Pair<? extends T, ? extends T>, Pair<U, U>>> {
+        private static final class InnerPairMap<T, U> implements Function<Pair<? extends T, ? extends T>, Pair<U, U>> {
+            private final Function<? super T, ? extends U> fun;
 
-                    Function<Pair<T,T>, Pair<U,U>> return_fun =
-                            (Pair<T, T> curr_pair) -> {
-                                T curr_first = curr_pair.getFirst();
-                                T curr_second = curr_pair.getSecond();
-                                U new_first = fun.apply(curr_first);
-                                U new_second = fun.apply(curr_second);
-                                Pair<U, U> new_pair = new Pair<>(new_first, new_second);
-                                return new_pair;
-                            };
-                    return return_fun;
+            private InnerPairMap(Function<? super T, ? extends U> fun) {
+                this.fun = fun;
+            }
 
+            @Override
+            public Pair<U, U> apply(Pair<? extends T, ? extends T> curr_pair) {
+                T curr_first = curr_pair.getFirst();
+                T curr_second = curr_pair.getSecond();
+                U new_first = fun.apply(curr_first);
+                U new_second = fun.apply(curr_second);
+                Pair<U, U> new_pair = new Pair<>(new_first, new_second);
+                return new_pair;
+            }
+        }
+
+        @Override
+        public Function<Pair<? extends T, ? extends T>, Pair<U, U>> apply(Function<? super T, ? extends U> fun) {
+            Function<Pair<? extends T, ? extends T>, Pair<U, U>> return_fun =
+                    new InnerPairMap<T, U>(fun);
+            return return_fun;
+        }
     }
-
 
 }

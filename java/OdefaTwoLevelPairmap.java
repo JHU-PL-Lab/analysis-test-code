@@ -16,21 +16,21 @@ public class OdefaTwoLevelPairmap {
         Pair<Pair<MyBoolean, MyInteger>, Pair<MyBoolean, MyInteger>> pair_two =
                 new Pair<Pair<MyBoolean, MyInteger>, Pair<MyBoolean, MyInteger>> (pair_one, pair_one);
 
-        Function<Object, Object> identFunction = ident();
+        Ident identFunction = new Ident();
 
         Function<Function<? super Object, ?>, Function<Pair<?, ?>, Pair<Object,Object>>>
-                identityMapper_lv1 = pairMap();
+                identityMapper_lv1 = new PairMap<>();
 
         Function<Function<? super Pair<?, ?>, ? extends Pair<Object, Object>>,
                  Function<Pair<? extends Pair<?, ?>, ? extends Pair<?, ?>>, Pair<Pair<Object, Object>,Pair<Object, Object>>>>
-                identityMapper_lv2 = pairMap();
+                identityMapper_lv2 = new PairMap<>();
 
         Pair<Pair<Object, Object>, Pair<Object, Object>> call =
                 identityMapper_lv2.apply(identityMapper_lv1.apply(identFunction)).apply(pair_two);
 
         Pair<Object, Object> intermediate_res = call.getFirst();
 
-        MyInteger res = (MyInteger) intermediate_res.getSecond();
+        Object res = intermediate_res.getSecond();
 
         queryFor(res);
 
@@ -39,33 +39,40 @@ public class OdefaTwoLevelPairmap {
     private static <T> void queryFor(T query) {
     }
 
-    private static <T> Function<T, T> ident() {
-        return (T t) -> t;
+    private static class Ident implements Function<Object, Object> {
+        public Object apply(Object curr) {
+            return curr;
+        }
+
     }
 
-    // pair map factory
-    private static <T, U> Function<Function<? super T, ? extends U>, Function<Pair<? extends T, ? extends T>, Pair<U, U>>> pairMap() {
-        return (mapper -> pair -> new Pair<>(mapper.apply(pair.getFirst()), mapper.apply(pair.getSecond())));
-    }
+    private static final class PairMap<T, U> implements
+            Function<Function<? super T, ? extends U>, Function<Pair<? extends T, ? extends T>, Pair<U, U>>> {
+        private static final class InnerPairMap<T, U> implements Function<Pair<? extends T, ? extends T>, Pair<U, U>> {
+            private final Function<? super T, ? extends U> fun;
 
-//    private static <T, U> Function<Function<? super T, ? extends U>, Function<Pair<? extends T, ? extends T>, Pair<U,U>>> pairMap () {
-//        Function<Function<? super T, ? extends U>, Function<Pair<? extends T,? extends T>, Pair<U,U>>> pairmap_fun =
-//                (Function<? super T, ? extends U> fun) -> {
-//                    Function<Pair<? extends T, ? extends T>, Pair<U,U>> return_fun =
-//                            (Pair<? extends T, ? extends T> curr_pair) -> {
-//                                T curr_first = curr_pair.getFirst();
-//                                T curr_second = curr_pair.getSecond();
-//                                U new_first = fun.apply(curr_first);
-//                                U new_second = fun.apply(curr_second);
-//                                Pair<U, U> new_pair = new Pair<>(new_first, new_second);
-//                                return new_pair;
-//                            };
-//                    return return_fun;
-//
-//                };
-//
-//        return pairmap_fun;
-//    }
+            private InnerPairMap(Function<? super T, ? extends U> fun) {
+                this.fun = fun;
+            }
+
+            @Override
+            public Pair<U, U> apply(Pair<? extends T, ? extends T> curr_pair) {
+                T curr_first = curr_pair.getFirst();
+                T curr_second = curr_pair.getSecond();
+                U new_first = fun.apply(curr_first);
+                U new_second = fun.apply(curr_second);
+                Pair<U, U> new_pair = new Pair<>(new_first, new_second);
+                return new_pair;
+            }
+        }
+
+        @Override
+        public Function<Pair<? extends T, ? extends T>, Pair<U, U>> apply(Function<? super T, ? extends U> fun) {
+            Function<Pair<? extends T, ? extends T>, Pair<U, U>> return_fun =
+                    new InnerPairMap<T, U>(fun);
+            return return_fun;
+        }
+    }
 
 
 }

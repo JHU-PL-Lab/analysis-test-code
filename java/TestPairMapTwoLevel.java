@@ -8,95 +8,37 @@ public class TestPairMapTwoLevel {
 
     public static void main(String... args) {
         MyInteger one = new MyInteger(1);
-        MyBoolean mb_true = new MyBoolean(true);
-        MyBoolean mb_false = new MyBoolean(false);
 
         Pair<MyInteger, MyInteger> pair_one = new Pair<>(one, one);
-        Pair<MyBoolean, MyBoolean> pair_one_bool = new Pair<>(mb_true, mb_false);
 
         Pair<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger> > pair_two =
                 new Pair<>(pair_one, pair_one);
 
-
-        Function<MyInteger, MyInteger> inc_fun =
-                ((MyInteger curr_myint) ->
-                {
-                    int val = curr_myint.getValue();
-
-                    return curr_myint.add(one);
-                }
-                );
+        IncFun inc_fun = new IncFun();
+        IntToBoolFun int_bool_fun = new IntToBoolFun();
 
 
-        Function<MyInteger, MyBoolean> int_to_bool_conversion_fun =
-                ((MyInteger curr_myint) ->
-                {
-                    int val = curr_myint.getValue();
-                    if (val > 0) {
-                        MyBoolean new_boolean_true = new MyBoolean(true);
-                        return new_boolean_true;
-                    } {
-                    MyBoolean new_boolean_false = new MyBoolean(false);
-                    return new_boolean_false;
-                }
+        Function<Function<? super Object, ?>, Function<Pair<?, ?>, Pair<Object,Object>>>
+                pairmap_lv1 = new PairMap<>();
 
-                }
-                );
+        Function<Function<? super Pair<?, ?>, ? extends Pair<Object, Object>>,
+                Function<Pair<? extends Pair<?, ?>, ? extends Pair<?, ?>>, Pair<Pair<Object, Object>,Pair<Object, Object>>>>
+                pairmap_lv2 = new PairMap<>();
 
-        Function<MyBoolean, MyBoolean> flip_fun =
-                ((MyBoolean curr_mybool) ->
-                {
-                    boolean val = curr_mybool.getValue();
-                    if (val == true) {
-                        return new MyBoolean(false);
-                    } {
-                        return new MyBoolean(true);
-                }
-                }
-                );
+        Pair<Pair<Object, Object>, Pair<Object, Object>> result_two_pair_int =
+                pairmap_lv2.apply(pairmap_lv1.apply(inc_fun)).apply(pair_two);
 
+        Pair<Pair<Object, Object>, Pair<Object, Object>> result_two_pair_bool =
+                pairmap_lv2.apply(pairmap_lv1.apply(int_bool_fun)).apply(pair_two);
 
-        Function<Function<MyInteger, MyInteger>, Function<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger>>>
-                pmlv1_int_to_int = pairMap();
-        Pair<MyInteger, MyInteger> result_pair_int = pmlv1_int_to_int.apply(inc_fun).apply(pair_one);
+        Pair<Object, Object> result_two_pair_bool_first = result_two_pair_bool.getFirst();
+        Object result_bool = result_two_pair_bool_first.getFirst();
 
-        Function<Function<MyInteger, MyBoolean>, Function<Pair<MyInteger, MyInteger>, Pair<MyBoolean, MyBoolean>>>
-                pmlv1_int_to_bool = pairMap();
-        Pair<MyBoolean, MyBoolean> result_pair_bool = pmlv1_int_to_bool.apply(int_to_bool_conversion_fun).apply(pair_one);
+        Pair<Object, Object> result_two_pair_int_first = result_two_pair_int.getFirst();
+        Object result_int = result_two_pair_int_first.getFirst();
 
-//        Function<Function<MyBoolean, MyBoolean>, Function<Pair<MyBoolean, MyBoolean>, Pair<MyBoolean, MyBoolean>>>
-//                pmlv1_bool_to_bool = pairMap();
-//        Pair<MyBoolean, MyBoolean> result_pair_bool = pmlv1_bool_to_bool.apply(flip_fun).apply(pair_one_bool);
-
-
-        MyInteger result_pair_int_first = result_pair_int.getFirst();
-        MyBoolean result_pair_bool_first = result_pair_bool.getFirst();
-
-        //template for two level deep pair map
-        //Function<Function<Pair<A, A>, Pair<B, B>>, Function<Pair<Pair<A, A>, Pair<A, A>>, Pair<Pair<B, B>, Pair<B, B>>>>
-
-
-//         two level deep pair map with deepest fun being int -> bool
-        Function<Function<Pair<MyInteger, MyInteger>, Pair<MyBoolean, MyBoolean>>,
-                Function<Pair<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger>>,
-                        Pair<Pair<MyBoolean, MyBoolean>, Pair<MyBoolean, MyBoolean>>>> pmlv2_int_to_bool = pairMap();
-
-//         result of doing two level pairmap with int -> bool
-        Pair<Pair<MyBoolean, MyBoolean>, Pair<MyBoolean, MyBoolean>> result_two_pair_bool =
-                pmlv2_int_to_bool.apply(pmlv1_int_to_bool.apply(int_to_bool_conversion_fun)).apply(pair_two);
-
-//         two level deep pair map with deepest fun being int -> int
-        Function<Function<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger>>,
-                Function<Pair<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger>>,
-                        Pair<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger>>>> pmlv2_int_to_int = pairMap();
-
-//         result of doing two level pairmap with int -> int
-        Pair<Pair<MyInteger, MyInteger>, Pair<MyInteger, MyInteger>> result_two_pair_int =
-                pmlv2_int_to_int.apply(pmlv1_int_to_int.apply(inc_fun)).apply(pair_two);
-
-        Pair<MyBoolean, MyBoolean> result_two_pair_bool_first = result_two_pair_bool.getFirst();
-
-        Pair<MyInteger, MyInteger> result_two_pair_int_first = result_two_pair_int.getFirst();
+        System.out.println(result_bool);
+        System.out.println(result_int);
 
         queryFor(result_two_pair_int_first);
 
@@ -106,39 +48,82 @@ public class TestPairMapTwoLevel {
 
     }
 
-    private static <T, U> Function<Function<T,U>, Function<Pair<T,T>, Pair<U,U>>> pairMap () {
-        Function<Function<T,U>, Function<Pair<T,T>, Pair<U,U>>> pairmap_fun =
-                (Function<T,U> fun) -> {
-                    Function<Pair<T,T>, Pair<U,U>> return_fun =
-                            (Pair<T, T> curr_pair) -> {
-                                T curr_first = curr_pair.getFirst();
-                                T curr_second = curr_pair.getSecond();
-                                U new_first = fun.apply(curr_first);
-                                U new_second = fun.apply(curr_second);
-                                Pair<U, U> new_pair = new Pair<>(new_first, new_second);
-                                return new_pair;
-                            };
-                    return return_fun;
-
-                };
-
-        return pairmap_fun;
-    }
-
-    private static <T, U> Function<Pair<T,T>, Pair<U,U>> testPairMap (Function<T, U> fun) {
-
-                    Function<Pair<T,T>, Pair<U,U>> return_fun =
-                            (Pair<T, T> curr_pair) -> {
-                                T curr_first = curr_pair.getFirst();
-                                T curr_second = curr_pair.getSecond();
-                                U new_first = fun.apply(curr_first);
-                                U new_second = fun.apply(curr_second);
-                                Pair<U, U> new_pair = new Pair<>(new_first, new_second);
-                                return new_pair;
-                            };
-                    return return_fun;
+    private static class IncFun implements Function<Object, Object> {
+        public Object apply(Object curr) {
+            if (curr instanceof MyInteger) {
+                MyInteger curr_myint = (MyInteger) curr;
+                MyInteger one = new MyInteger(1);
+                return curr_myint.add(one);
+            }
+            {
+                return null;
+            }
+        }
 
     }
 
+    private static class MultFun implements Function<Object, Object> {
+        public Object apply(Object curr) {
+            if (curr instanceof MyInteger ) {
+                MyInteger curr_myint = (MyInteger) curr;
+                MyInteger one = new MyInteger(1);
+                return curr_myint.multiply(one);
+            }
+            {
+                return null;
+            }
+        }
+
+    }
+
+    private static class IntToBoolFun implements Function<Object, Object> {
+        public Object apply(Object curr) {
+            if (curr instanceof MyInteger) {
+                MyBoolean tr = new MyBoolean(true);
+                MyInteger curr_myint = (MyInteger) curr;
+                int val = curr_myint.getValue();
+                if (val > 0) {
+                    MyBoolean new_boolean_true = new MyBoolean(true);
+                    MyBoolean tr_result = new_boolean_true.and(tr);
+                    return tr_result;
+                } {
+                    MyBoolean new_boolean_false = new MyBoolean(false);
+                    MyBoolean fl_result = new_boolean_false.or(tr);
+                    return fl_result;
+                }
+            }
+            {
+                return null;
+            }
+        }
+    }
+
+    private static final class PairMap<T, U> implements
+            Function<Function<? super T, ? extends U>, Function<Pair<? extends T, ? extends T>, Pair<U, U>>> {
+        private static final class InnerPairMap<T, U> implements Function<Pair<? extends T, ? extends T>, Pair<U, U>> {
+            private final Function<? super T, ? extends U> fun;
+
+            private InnerPairMap(Function<? super T, ? extends U> fun) {
+                this.fun = fun;
+            }
+
+            @Override
+            public Pair<U, U> apply(Pair<? extends T, ? extends T> curr_pair) {
+                T curr_first = curr_pair.getFirst();
+                T curr_second = curr_pair.getSecond();
+                U new_first = fun.apply(curr_first);
+                U new_second = fun.apply(curr_second);
+                Pair<U, U> new_pair = new Pair<>(new_first, new_second);
+                return new_pair;
+            }
+        }
+
+        @Override
+        public Function<Pair<? extends T, ? extends T>, Pair<U, U>> apply(Function<? super T, ? extends U> fun) {
+            Function<Pair<? extends T, ? extends T>, Pair<U, U>> return_fun =
+                    new InnerPairMap<T, U>(fun);
+            return return_fun;
+        }
+    }
 
 }
