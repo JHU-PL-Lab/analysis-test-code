@@ -5,26 +5,24 @@ import java.util.function.Function;
 public class BoxTest3 {
 
     public static void main(String[] args) {
-        MyInteger one = new MyInteger(1);
-        MyInteger two = new MyInteger(2);
 
+        MyInteger one = new MyInteger(1){};
+        MyInteger two = new MyInteger(2){};
 
-        Box<MyInteger> box_one = new Box<>(one);
-        Box<MyInteger> box_two = new Box<>(two);
+        Box<MyInteger> box_one = new Box<MyInteger>(one){};
+        Box<MyInteger> box_two = new Box<MyInteger>(two){};
 
         BoxInc boxInc1 = new BoxInc();
 //        BoxInc boxInc2 = new BoxInc();
 
-
         Box<MyInteger> result_box_int = boxInc1.apply(box_one);
         Box<MyInteger> result_box_int_2 = boxInc1.apply(box_two);
 
+        System.out.println(result_box_int_2.getValue().getValue());
         MyInteger result_pair_int_first = result_box_int.getValue();
-        System.out.println(result_pair_int_first.getValue());
+//        System.out.println(result_pair_int_first.getValue());
 
-
-        queryFor(result_pair_int_first);
-
+//        queryFor(result_box_int_2);
 
     }
 
@@ -42,8 +40,7 @@ public class BoxTest3 {
             return return_value;
         }
 
-        // method that lets you add the MyInteger with another MyInteger, and returns the result as a new MyInteger.
-        public MyInteger add() {
+        public MyInteger ident() {
             return this;
         }
 
@@ -71,13 +68,13 @@ public class BoxTest3 {
 
     private static class BoxInc implements Function<Box<MyInteger>, Box<MyInteger>> {
 
-        public BoxInc() {
-        }
+//        public BoxInc() {
+//        }
 
         public Box<MyInteger> apply(Box<MyInteger> curr_box) {
+            queryFor(curr_box);
             MyInteger curr_first = curr_box.getValue();
-//            MyInteger one_to_add = new MyInteger(1);
-            MyInteger new_first = curr_first.add();
+            MyInteger new_first = curr_first.ident();
             Box<MyInteger> new_box = new Box<>(new_first);
             return new_box;
         }

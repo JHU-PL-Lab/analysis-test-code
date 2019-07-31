@@ -1,22 +1,18 @@
 package boomerang.example;
 
-public class InterpreterExample3 {
+public class InterpreterExample3_4NT {
 
     public static void main(String... args) {
         Expr fal = new BoolExpr(false);
         Expr tru = new BoolExpr(true);
-//        Expr fal2 = new BoolExpr(false);
-//        Expr tru2 = new BoolExpr(true);
         Expr trueAndFalse = new OrExpr(fal, tru);
         Expr tAndfAndT = new AndExpr(trueAndFalse, tru);
-//        Expr falseOrTrue = new OrExpr(fal2, tru2);
-//        Expr fOrTAndT = new AndExpr(falseOrTrue, tru2);
         Evaluate eval = new Evaluate();
-        Expr res = fal.visit(null, eval);
-        Expr res2 = tru.visit(null, eval);
-        System.out.println(res2);
-//        BoolExpr res2 = (BoolExpr) fOrTAndT.visit(null, eval);
-//        System.out.println(res.getValue());
+        CountNodes countNodes = new CountNodes();
+        Object res = tAndfAndT.visit(null, eval);
+        Object res_p = tAndfAndT.visit(null, countNodes);
+
+        System.out.println(res_p);
         queryFor(res);
 
     }
@@ -55,6 +51,28 @@ public class InterpreterExample3 {
             else {
                 return evalRight;
             }
+        }
+    }
+
+    public static class CountNodes implements ExprVisitor<Void, Integer> {
+        public Integer visitBool (BoolExpr e, Void v) {
+            return new Integer(1);
+        }
+        public Integer visitOr (OrExpr e, Void v) {
+            Expr leftExp = e.get_left();
+            Expr rightExp = e.get_right();
+            Integer evalLeft = (Integer) leftExp.visit(null, this);
+            Integer evalRight = (Integer) rightExp.visit(null, this);
+            Integer res = new Integer (evalLeft + evalRight);
+            return res;
+        }
+        public Integer visitAnd (AndExpr e, Void v) {
+            Expr leftExp = e.get_left();
+            Expr rightExp = e.get_right();
+            Integer evalLeft = (Integer)leftExp.visit(null, this);
+            Integer evalRight = (Integer) rightExp.visit(null, this);
+            Integer res = new Integer (evalLeft + evalRight);
+            return res;
         }
     }
 
@@ -131,7 +149,7 @@ public class InterpreterExample3 {
         }
     }
 
-    private static void queryFor(Expr query) {
+    private static <T> void queryFor(T query) {
 
     }
 
