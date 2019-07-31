@@ -133,4 +133,3 @@ list_1 = list_make len_div_2;
 main_setup_1 = fun_straight_up fun_straight_up;
 main_setup_2 = main_setup_1 fun_opposite;
 result = main_setup_2 list_1;
-#result_list_2 = main_setup_2 list_2;
