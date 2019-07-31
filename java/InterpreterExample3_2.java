@@ -1,22 +1,15 @@
 package boomerang.example;
 
-public class InterpreterExample3 {
+public class InterpreterExample3_2 {
 
     public static void main(String... args) {
+
         Expr fal = new BoolExpr(false);
         Expr tru = new BoolExpr(true);
-//        Expr fal2 = new BoolExpr(false);
-//        Expr tru2 = new BoolExpr(true);
         Expr trueAndFalse = new OrExpr(fal, tru);
         Expr tAndfAndT = new AndExpr(trueAndFalse, tru);
-//        Expr falseOrTrue = new OrExpr(fal2, tru2);
-//        Expr fOrTAndT = new AndExpr(falseOrTrue, tru2);
-        Evaluate eval = new Evaluate();
-        Expr res = fal.visit(null, eval);
-        Expr res2 = tru.visit(null, eval);
-        System.out.println(res2);
-//        BoolExpr res2 = (BoolExpr) fOrTAndT.visit(null, eval);
-//        System.out.println(res.getValue());
+        BoolExpr res = (BoolExpr) tAndfAndT.visit(null, new Evaluate());
+        System.out.println(res.getValue());
         queryFor(res);
 
     }
@@ -37,24 +30,16 @@ public class InterpreterExample3 {
             Expr rightExp = e.get_right();
             BoolExpr evalLeft = (BoolExpr) leftExp.visit(null, this);
             BoolExpr evalRight = (BoolExpr) rightExp.visit(null, this);
-            if (evalLeft.getValue()) {
-                return evalLeft;
-            }
-            else {
-                return evalRight;
-            }
+            boolean res_bool = evalLeft.getValue() || evalRight.getValue();
+            return new BoolExpr(res_bool);
         }
         public Expr visitAnd (AndExpr e, Void v) {
             Expr leftExp = e.get_left();
             Expr rightExp = e.get_right();
             BoolExpr evalLeft = (BoolExpr) leftExp.visit(null, this);
             BoolExpr evalRight = (BoolExpr) rightExp.visit(null, this);
-            if (!evalLeft.getValue()) {
-                return evalLeft;
-            }
-            else {
-                return evalRight;
-            }
+            boolean res_bool = evalLeft.getValue() && evalRight.getValue();
+            return new BoolExpr(res_bool);
         }
     }
 

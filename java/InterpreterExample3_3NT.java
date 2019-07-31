@@ -1,21 +1,17 @@
 package boomerang.example;
 
-public class InterpreterExample3 {
+public class InterpreterExample3_3NT {
 
     public static void main(String... args) {
-        Expr fal = new BoolExpr(false);
-        Expr tru = new BoolExpr(true);
-//        Expr fal2 = new BoolExpr(false);
-//        Expr tru2 = new BoolExpr(true);
+        Expr fal = new BoolExpr(false){};
+        Expr tru = new BoolExpr(true){};
         Expr trueAndFalse = new OrExpr(fal, tru);
         Expr tAndfAndT = new AndExpr(trueAndFalse, tru);
-//        Expr falseOrTrue = new OrExpr(fal2, tru2);
-//        Expr fOrTAndT = new AndExpr(falseOrTrue, tru2);
         Evaluate eval = new Evaluate();
-        Expr res = fal.visit(null, eval);
-        Expr res2 = tru.visit(null, eval);
-        System.out.println(res2);
-//        BoolExpr res2 = (BoolExpr) fOrTAndT.visit(null, eval);
+        Expand expand = new Expand();
+        Expr res = tAndfAndT.visit(null, eval);
+        Expr res_p = tAndfAndT.visit(null, expand);
+
 //        System.out.println(res.getValue());
         queryFor(res);
 
@@ -55,6 +51,20 @@ public class InterpreterExample3 {
             else {
                 return evalRight;
             }
+        }
+    }
+
+    public static class Expand implements ExprVisitor<Void, Expr> {
+        public Expr visitBool (BoolExpr e, Void v) {
+            return new OrExpr(e, e){};
+        }
+        public Expr visitOr (OrExpr e, Void v) {
+            return new AndExpr(e, e){};
+
+        }
+        public Expr visitAnd (AndExpr e, Void v) {
+            return new OrExpr(e, e){};
+
         }
     }
 
@@ -131,7 +141,7 @@ public class InterpreterExample3 {
         }
     }
 
-    private static void queryFor(Expr query) {
+    private static <T> void queryFor(T query) {
 
     }
 
