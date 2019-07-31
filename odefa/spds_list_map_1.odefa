@@ -1,0 +1,61 @@
+zero = 0;
+one = 1;
+five = 5;
+empty = {};
+list_maker_p =
+  fun lm_self ->
+    (x0 = fun lm_counter ->
+            (x1 = lm_counter == zero;
+             x2 = x1 ~ true ?
+             fun counter_is_zero ->
+              (x3 = {empty = zero};)
+             :
+             fun counter_non_zero ->
+              (x4 = lm_self lm_self;
+               x5 = lm_counter - one;
+               x6 = x4 x5;
+               x7 = {head = lm_counter, tail = x6};
+              )
+            )
+    );
+list_maker = list_maker_p list_maker_p;
+lst_5 = list_maker five;
+inc_fun = fun old_num -> (x8 = old_num + one;);
+int_to_bool =
+  fun cur_num ->
+    (x9 = cur_num < zero;
+     x10 = x9 ~ true ?
+     fun lt_zero -> (x11 = false;):
+     fun geq_zero -> (x12 = true;)
+);
+list_map_p = fun self2 ->
+             (x14 = fun map_fun ->
+                    (x15 = fun list_to_map ->
+                           (x16 = list_to_map.tail;
+                            x17 = x16~{empty = any}?
+                            fun isempty ->
+                            (x18 = list_to_map.head;
+                             x19 = map_fun x18;
+                             tailexpr = {empty = empty};
+                             x20 = {head = x19, tail = tailexpr};
+                            )
+                            :
+                            fun notempty ->
+                            (x21 = list_to_map.head;
+                             x22 = map_fun x21;
+                             x23 = self2 self2;
+                             x24 = x23 map_fun;
+                             x25 = list_to_map.tail;
+                             x26 = x24 x25;
+                             x27 = {head = x22, tail = x26};
+                            )
+                           )
+                    )
+             )
+;
+list_map = list_map_p list_map_p;
+pre_map_1 = list_map inc_fun;
+map_1 = pre_map_1 lst_5;
+pre_map_2 = list_map int_to_bool;
+map_2 = pre_map_2 lst_5;
+res_1_hd = map_1.head;
