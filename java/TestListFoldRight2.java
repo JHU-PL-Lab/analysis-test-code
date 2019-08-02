@@ -4,9 +4,6 @@ import java.util.function.Function;
 
 import static boomerang.example.TestUtils.*;
 
-// This test confirms that conflation does NOT occur when there are two iterations of List.fold_left,
-// one with integer list/acc (fun int -> int), and one with boolean list/acc (fun bool -> bool)
-
 public class TestListFoldRight2 {
 
 
@@ -31,7 +28,6 @@ public class TestListFoldRight2 {
         System.out.println(lf_result);
         System.out.println(lf_result_2);
 
-//        queryFor(lf_result);
         queryFor(lf_result);
 
     }
@@ -41,14 +37,9 @@ public class TestListFoldRight2 {
         public Object apply(Pair<Object, Object> curr) {
             Object curr_first = curr.getFirst();
             Object curr_second = curr.getSecond();
-            if (curr_second instanceof MyInteger) {
                 MyInteger curr_acc = (MyInteger) curr_first;
                 MyInteger curr_myint = (MyInteger) curr_second;
                 return curr_acc.add(curr_myint);
-            }
-            else {
-                return null;
-            }
         }
 
     }
@@ -57,14 +48,9 @@ public class TestListFoldRight2 {
         public Object apply(Pair<Object, Object> curr) {
             Object curr_first = curr.getFirst();
             Object curr_second = curr.getSecond();
-            if (curr_second instanceof MyBoolean) {
                 MyBoolean curr_acc = (MyBoolean) curr_first;
                 MyBoolean curr_mybool = (MyBoolean) curr_second;
                 return curr_acc.and(curr_mybool);
-            }
-            else {
-                return null;
-            }
         }
     }
 

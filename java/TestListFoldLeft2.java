@@ -40,14 +40,9 @@ public class TestListFoldLeft2 {
         public Object apply(Pair<Object, Object> curr) {
             Object curr_first = curr.getFirst();
             Object curr_second = curr.getSecond();
-            if (curr_second instanceof MyInteger) {
                 MyInteger curr_acc = (MyInteger) curr_first;
                 MyInteger curr_myint = (MyInteger) curr_second;
                 return curr_acc.add(curr_myint);
-            }
-            {
-                return null;
-            }
         }
 
     }
@@ -56,14 +51,9 @@ public class TestListFoldLeft2 {
         public Object apply(Pair<Object, Object> curr) {
             Object curr_first = curr.getFirst();
             Object curr_second = curr.getSecond();
-            if (curr_second instanceof MyBoolean) {
                 MyBoolean curr_acc = (MyBoolean) curr_first;
                 MyBoolean curr_mybool = (MyBoolean) curr_second;
                 return curr_acc.and(curr_mybool);
-            }
-            {
-                return null;
-            }
         }
     }
 

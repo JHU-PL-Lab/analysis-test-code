@@ -65,35 +65,24 @@ public class TestPairMapOneLevel {
 
     private static class IncFun implements Function<Object, Object> {
         public Object apply(Object curr) {
-            if (curr instanceof MyInteger) {
                 MyInteger curr_myint = (MyInteger) curr;
                 MyInteger one = new MyInteger(1);
                 return curr_myint.add(one);
-            }
-            {
-                return null;
-            }
         }
 
     }
 
     private static class MultFun implements Function<Object, Object> {
         public Object apply(Object curr) {
-            if (curr instanceof MyInteger ) {
                 MyInteger curr_myint = (MyInteger) curr;
                 MyInteger one = new MyInteger(1);
                 return curr_myint.multiply(one);
-            }
-            else {
-                return null;
-            }
         }
 
     }
 
     private static class IntToBoolFun implements Function<Object, Object> {
         public Object apply(Object curr) {
-            if (curr instanceof MyInteger) {
                 MyBoolean tr = new MyBoolean(true);
                 MyInteger curr_myint = (MyInteger) curr;
                 int val = curr_myint.getValue();
@@ -107,10 +96,6 @@ public class TestPairMapOneLevel {
                     MyBoolean fl_result = new_boolean_false.or(tr);
                     return fl_result;
                 }
-            }
-            {
-                return null;
-            }
         }
     }
 

@@ -10,7 +10,6 @@ public class TestListMap {
         MyInteger new_int = new MyInteger(5);
         LinkedList<MyInteger> int_list_1 = myIntListMaker(5);
 
-//        IncFun inc_fun = new IncFun();
         IntToBoolFun int_to_bool_conversion_fun = new IntToBoolFun();
         MultFun mult_fun = new MultFun();
 
@@ -33,35 +32,24 @@ public class TestListMap {
 
     private static class IncFun implements Function<Object, Object> {
         public Object apply(Object curr) {
-            if (curr instanceof MyInteger) {
                 MyInteger curr_myint = (MyInteger) curr;
                 MyInteger one = new MyInteger(1);
                 return curr_myint.add(one);
-            }
-            else {
-                return null;
-            }
         }
 
     }
 
     private static class MultFun implements Function<Object, Object> {
         public Object apply(Object curr) {
-            if (curr instanceof MyInteger ) {
                 MyInteger curr_myint = (MyInteger) curr;
                 MyInteger one = new MyInteger(1);
                 return curr_myint.multiply(one);
-            }
-            else {
-                return null;
-            }
         }
 
     }
 
     private static class IntToBoolFun implements Function<Object, Object> {
         public Object apply(Object curr) {
-            if (curr instanceof MyInteger) {
                 MyBoolean tr = new MyBoolean(true);
                 MyInteger curr_myint = (MyInteger) curr;
                 int val = curr_myint.getValue();
@@ -75,10 +63,6 @@ public class TestListMap {
                     MyBoolean fl_result = new_boolean_false.or(tr);
                     return fl_result;
                 }
-            }
-            {
-                return null;
-            }
         }
     }
 

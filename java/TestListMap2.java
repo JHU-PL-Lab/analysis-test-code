@@ -23,7 +23,6 @@ public class TestListMap2 {
 
         queryFor(result_1_head);
 
-
     }
 
     private static <T> void queryFor(T query) {
@@ -32,7 +31,6 @@ public class TestListMap2 {
 
     private static class BoolFlipFun implements Function<Object, Object> {
         public Object apply(Object curr_obj) {
-            if (curr_obj instanceof MyBoolean) {
                 MyBoolean curr = (MyBoolean) curr_obj;
                 boolean val = curr.getValue();
                 if (val == false) {
@@ -43,17 +41,12 @@ public class TestListMap2 {
                     MyBoolean new_boolean_false = new MyBoolean(false);
                     return new_boolean_false;
             }
-        }
-            else {
-                return null;
-            }
     }
 
     }
 
     private static class BoolIntFun implements Function<Object, Object> {
         public Object apply(Object curr_obj) {
-            if (curr_obj instanceof MyBoolean) {
                 MyBoolean curr = (MyBoolean) curr_obj;
                 boolean val = curr.getValue();
                 if (val == true) {
@@ -63,10 +56,6 @@ public class TestListMap2 {
                     MyInteger zero = new MyInteger(0);
                     return zero;
                 }
-            }
-            else {
-                return null;
-            }
         }
     }
 

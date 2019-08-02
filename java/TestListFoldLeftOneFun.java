@@ -35,14 +35,9 @@ public class TestListFoldLeftOneFun {
         public Object apply(Pair<Object, Object> curr) {
             Object curr_first = curr.getFirst();
             Object curr_second = curr.getSecond();
-            if (curr_second instanceof MyInteger) {
                 MyInteger curr_acc = (MyInteger) curr_first;
                 MyInteger curr_myint = (MyInteger) curr_second;
                 return curr_acc.add(curr_myint);
-            }
-            {
-                return null;
-            }
         }
 
     }
