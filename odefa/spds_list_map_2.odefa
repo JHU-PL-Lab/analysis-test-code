@@ -86,4 +86,4 @@ map_2 = pre_map_2 bool_lst;
 
 list_access_1 = list_access_p list_access_p;
 list_access_2 = list_access_1 map_1; 
-res_1_hd = list_access_2 one;
+res_1_hd = list_access_2 zero;

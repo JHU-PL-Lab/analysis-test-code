@@ -14,11 +14,11 @@ public class TestListMap {
         MultFun mult_fun = new MultFun();
 
         LinkedList<Object> list_1 = listMap(mult_fun, int_list_1);
-        Object list_1_head = list_1.head;
+        Object list_1_head = listAccess(list_1, 0);
 
         LinkedList<Object> list_2 = listMap(int_to_bool_conversion_fun, int_list_1);
 
-        Object list_2_head = list_2.head;
+        Object list_2_head = listAccess(list_2, 0);
 
         System.out.println(list_1_head);
         System.out.println(list_2_head);
