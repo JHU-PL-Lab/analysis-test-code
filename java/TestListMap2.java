@@ -15,8 +15,8 @@ public class TestListMap2 {
         LinkedList<Object> result_1 = listMap(bool_flip_fun, new_list);
         LinkedList<Object> result_2 = listMap(bool_to_integer_fun, new_list);
 
-        Object result_1_head = result_1.head;
-        Object result_2_head = result_2.head;
+        Object result_1_head = listAccess(result_1, 0);
+        Object result_2_head = listAccess(result_2, 0);
 
         System.out.println(result_1_head);
         System.out.println(result_2_head);
@@ -31,31 +31,31 @@ public class TestListMap2 {
 
     private static class BoolFlipFun implements Function<Object, Object> {
         public Object apply(Object curr_obj) {
-                MyBoolean curr = (MyBoolean) curr_obj;
-                boolean val = curr.getValue();
-                if (val == false) {
-                    MyBoolean new_boolean_true = new MyBoolean(true);
-                    return new_boolean_true;
-                }
-                else {
-                    MyBoolean new_boolean_false = new MyBoolean(false);
-                    return new_boolean_false;
+            MyBoolean curr = (MyBoolean) curr_obj;
+            boolean val = curr.getValue();
+            if (val == false) {
+                MyBoolean new_boolean_true = new MyBoolean(true);
+                return new_boolean_true;
             }
-    }
+            else {
+                MyBoolean new_boolean_false = new MyBoolean(false);
+                return new_boolean_false;
+            }
+        }
 
     }
 
     private static class BoolIntFun implements Function<Object, Object> {
         public Object apply(Object curr_obj) {
-                MyBoolean curr = (MyBoolean) curr_obj;
-                boolean val = curr.getValue();
-                if (val == true) {
-                    MyInteger one = new MyInteger(1);
-                    return one;
-                } {
-                    MyInteger zero = new MyInteger(0);
-                    return zero;
-                }
+            MyBoolean curr = (MyBoolean) curr_obj;
+            boolean val = curr.getValue();
+            if (val == true) {
+                MyInteger one = new MyInteger(1);
+                return one;
+            } {
+                MyInteger zero = new MyInteger(0);
+                return zero;
+            }
         }
     }
 

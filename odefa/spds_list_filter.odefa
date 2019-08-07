@@ -1,0 +1,149 @@
+zero = 0;
+one = 1;
+two = 2; 
+three = 3; 
+four = 4;  
+
+# function that creates a list of alternating elements of length up to 4
+alt_list_maker = fun lm_self ->
+(
+  blub_1 = fun elem_0 -> 
+  (
+    blub_2 = fun elem_1 -> 
+    (
+      blub_3 = fun count -> 
+      (
+	# utilities for recursion 
+	setup_1 = lm_self lm_self; 
+	setup_2 = setup_1 elem_0; 
+	setup_3 = setup_2 elem_1; 
+	next_count = count - one;
+	# utilities for conditional  
+	count_is_zero = count == zero;
+	count_is_one = count == one; 
+	count_is_two = count == two; 
+	count_is_three = count == three;
+	count_is_four = count == four; 
+	cond0 = count_is_zero ~ true ?
+		fun cond0_match -> ( blub_4 = {empty = zero}; ) :
+		fun cond0_antimatch -> 
+		(
+		  cond1 = count_is_one ~ true ? 
+		  fun cond1_match -> ( 
+		    cond1_rest = setup_3 next_count; 
+		    blub_5 = {head = elem_1, tail = cond1_rest};  
+		  ):
+		  fun cond1_antimatch -> (
+		    cond2 = count_is_two ~ true ? 
+		    fun cond2_match -> (
+		      cond2_rest = setup_3 next_count; 
+		      blub_6 = {head = elem_0, tail = cond2_rest};
+		    ):
+		    fun cond2_antimatch -> (
+		      cond3 = count_is_three ~ true ?
+		      fun cond3_match -> (
+			cond3_rest = setup_3 next_count;
+			blub_7 = {head = elem_1, tail = cond3_rest};
+		      ):
+		      fun cond3_antimatch -> (
+			cond4 = count_is_four ~ true ? 
+			fun cond4_match -> (
+			  cond4_rest = setup_3 next_count;
+			  blub_8 = {head = elem_0, tail = cond4_rest};
+			):
+			fun cond4_antimatch -> (
+			  explode = zero zero;
+			);
+		      );
+		    );
+		  );    
+		);
+      );
+    );
+
+  );
+); 
+
+list_accessor = fun la_self ->
+(
+  blob0 = fun la_list ->
+(
+  blob1 = fun la_num ->
+  (
+    found = la_num == zero;
+    search = found~true?
+             fun done -> (access_res = la_list.head;
+             ):
+             fun not_done -> (
+              la_next = la_self la_self;
+              la_list_tail = la_list.tail;
+              la_next_with_list = la_next la_list_tail;
+              next_num = la_num - one;
+              la_go = la_next_with_list next_num;
+             );
+
+  );
+
+);
+
+);
+
+is_myint = fun o -> 
+(
+  is_myint_res = o ~ int ? 
+		  fun match_int -> (
+		    match_int_val = true; 
+		  ):
+		  fun antimatch_int -> (
+		    antimatch_int_val = false; 
+		  );
+);
+
+# list filter function - given itself (for recursion), a predicate function, and a list,
+# returns a list with elements that meet the predicate
+list_filter = fun lf_self -> 
+(
+  dummy_0 = fun pred -> 
+  (
+    dummy_1 = fun lst -> 
+    (
+      dummy_2 = lst ~ {empty = any} ? 
+	fun base_case -> (bc_ret = lst): 
+	fun recursive_case -> 
+	(
+	  lf_curr_head = lst.head; 
+	  lf_curr_tail = lst.tail; 
+	  lf_setup_1 = lf_self lf_self; 
+	  lf_setup_2 = lf_setup_1 pred; 
+	  lf_new_tail = lf_setup_2 lf_curr_tail; 
+	  meets_predicate = pred lf_curr_head; 
+	  lf_res_list = meets_predicate ~ true ? 
+	    fun match_predicate -> (
+	      lf_new_list = {head = lf_curr_head, tail = lf_new_tail}; 
+	    ): 
+	    fun antimatch_predicate -> (
+	      lf_ret = lf_new_tail; 
+	    );
+	);
+    );
+  );
+);
+
+new_int = 5;
+new_bool = false; 
+counter = 4; 
+index = 0; 
+
+alm_setup0 = alt_list_maker alt_list_maker; 
+alm_setup1 = alm_setup0 new_bool;
+alm_setup2 = alm_setup1 new_int; 
+test_list = alm_setup2 counter; 
+
+
+lf_setup0 = list_filter list_filter; 
+lf_setup1 = lf_setup0 is_myint; 
+res_list = lf_setup1 test_list;
+
+la_setup0 = list_accessor list_accessor; 
+la_setup1 = la_setup0 res_list; 
+res_list_head = la_setup1 index;
