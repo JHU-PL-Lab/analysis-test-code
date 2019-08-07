@@ -2,6 +2,43 @@ package boomerang.example;
 
 public class TestUtils {
 
+    public static abstract class IntOption {
+        public abstract IntOption add(IntOption toAdd);
+        public abstract IntOption add(SomeInt toAdd);
+
+    }
+
+    public static class SomeInt extends IntOption {
+
+        private Integer value;
+
+        public SomeInt(Integer n) {
+            this.value = n;
+        }
+        public IntOption add(IntOption toAdd) {
+            return toAdd.add(this);
+        }
+        public IntOption add(SomeInt toAdd) {
+            Integer val1 = toAdd.getValue();
+            Integer sum = val1 + this.getValue();
+            return new SomeInt(sum);
+        }
+        public Integer getValue() {
+            return value;
+        }
+    }
+
+    public static class NoInt extends IntOption {
+
+        public IntOption add(IntOption toAdd) {
+            return this;
+        }
+        public IntOption add(SomeInt toAdd) {
+            return this;
+        }
+
+    }
+
     public static class LinkedList <Abs_type> {
         Abs_type head;
         LinkedList<Abs_type> tail;
