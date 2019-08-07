@@ -1,40 +1,37 @@
-# this test passes a list of integers into List_fold twice with two different
+# This test passes a list of integers into List_fold_left twice with two different
 # functions with different return types. k gets conflated, s does well.
 
 zero = 0;
 one = 1;
 
-# for now this function assumes that accumulator and int have the same type,
-# and either they are int or bool.
+# This function checks whether the accumulator and the list item are integers;
+# if both are, add them together. If one of them isn't an int, return empty
+# set to signify type error
 fun_1 = fun accumulator ->
 (
   blub_0 = fun item ->
   (
-    fun_1_res = accumulator~int?
-             fun match_int -> (res_match_int = accumulator + item;):
-             fun antimatch_int -> (res_antimatch_int = accumulator or item;);
+    fun_1_res = item~int?
+             fun match_int ->
+                (res_match_int = accumulator~int?
+                  fun acc_match_int -> (correct_type = accumulator + item) :
+                  fun acc_antimatch_int -> (wrong_type = {};)
+                ):
+             fun antimatch_int -> (res_antimatch_int = {};);
   );
 );
 
-# This function assumes that if the item is an int, the accumulator is a boolean,
-# and else the accumulator is an int
-
+# A trivial accumulation function; always returns empty set
 fun_2 = fun accumulator_2 ->
 (
   blab_0 = fun item_2 ->
   (
-    fun_2_res = item_2~int?
-             fun match_int_2 -> (
-              a_bool = true;
-              a_combination_of_bool = a_bool and accumulator_2;
-             ):
-             fun antimatch_int_2 -> (an_int = 5;
-             res_antimatch_int_2 = accumulator_2 + an_int;);
+    fun_2_res = {};
   );
 );
 
 
-# function that generates a list, taking in itself (to recurse),
+# A function that generates a list, taking in itself (to recurse),
 # the element that goes into the list, and how long the list is
 list_maker = fun lm_self ->
 (
@@ -55,7 +52,7 @@ list_maker = fun lm_self ->
   );
 );
 
-# The equivalent of a List.fold function
+# The equivalent of a List.fold_left function
 list_folder = fun lf_self ->
 (
   blub_3 = fun the_function ->
@@ -82,40 +79,17 @@ list_folder = fun lf_self ->
   );
 );
 
-list_accessor = fun la_self ->
-(
-  blob0 = fun la_list ->
-(
-  blob1 = fun la_num ->
-  (
-    found = la_num == zero;
-    search = found~true?
-             fun done -> (access_res = la_list.head;
-             ):
-             fun not_done -> (
-              la_next = la_self la_self;
-              la_list_tail = la_list.tail;
-              la_next_with_list = la_next la_list_tail;
-              next_num = la_num - one;
-              la_go = la_next_with_list next_num;
-             );
-
-  );
-
-);
-
-);
-
 list_elm = 1;
 
 acc1 = 0;
-acc2 = false;
+acc2 = {};
 
 len = 5;
 
 # dynamically constructing the list
 list_maker_semi_real = list_maker list_maker;
 list_maker_real = list_maker_semi_real list_elm;
+# List of integers
 list_1 = list_maker_real len;
 
 # pass fold into itself
@@ -130,11 +104,11 @@ list_fold_w_fun_2 = list_fold fun_2;
 # pass the accumulator that corresponds with the list in the first fun
 list_fold_w_acc_1 = list_fold_w_fun_1 acc1;
 
-# pass the list into list_fold, making sure that it goes
+# pass the list into list_fold, making sure that it goes; result should be int
 list_fold_go_1 = list_fold_w_acc_1 list_1;
 
 # pass the accumulator that corresponds with the list in the second fun
 list_fold_w_acc_2 = list_fold_w_fun_2 acc2;
 
-# pass the list into list_fold with the second function
+# pass the list into list_fold with the second function; result should be empty set
 list_fold_go_2 = list_fold_w_acc_2 list_1;
