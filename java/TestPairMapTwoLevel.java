@@ -39,8 +39,8 @@ public class TestPairMapTwoLevel {
 
         System.out.println(result_bool);
         System.out.println(result_int);
-
-        queryFor(result_two_pair_int_first);
+        
+        queryFor(result_int);
 
     }
 
@@ -50,25 +50,29 @@ public class TestPairMapTwoLevel {
 
     private static class IncFun implements Function<Object, Object> {
         public Object apply(Object curr) {
-                MyInteger curr_myint = (MyInteger) curr;
+        		MyInteger curr_myint = (MyInteger) curr;
                 MyInteger one = new MyInteger(1);
                 return curr_myint.add(one);
+        	
+                
         }
 
     }
 
     private static class MultFun implements Function<Object, Object> {
         public Object apply(Object curr) {
-                MyInteger curr_myint = (MyInteger) curr;
+        		MyInteger curr_myint = (MyInteger) curr;
                 MyInteger one = new MyInteger(1);
                 return curr_myint.multiply(one);
+        	
+                
         }
 
     }
 
     private static class IntToBoolFun implements Function<Object, Object> {
         public Object apply(Object curr) {
-                MyBoolean tr = new MyBoolean(true);
+        		MyBoolean tr = new MyBoolean(true);
                 MyInteger curr_myint = (MyInteger) curr;
                 int val = curr_myint.getValue();
                 if (val > 0) {
@@ -80,6 +84,7 @@ public class TestPairMapTwoLevel {
                     MyBoolean fl_result = new_boolean_false.or(tr);
                     return fl_result;
                 }
+                
         }
     }
 
@@ -112,3 +117,4 @@ public class TestPairMapTwoLevel {
     }
 
 }
+

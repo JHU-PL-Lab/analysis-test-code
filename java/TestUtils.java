@@ -21,7 +21,8 @@ public class TestUtils {
         public IntOption add(SomeInt toAdd) {
             Integer val1 = toAdd.getValue();
             Integer sum = val1 + this.getValue();
-            return new SomeInt(sum);
+            IntOption res = new SomeInt(sum);
+            return res;
         }
         public Integer getValue() {
             return value;
@@ -31,10 +32,10 @@ public class TestUtils {
     public static class NoInt extends IntOption {
 
         public IntOption add(IntOption toAdd) {
-            return this;
+            return new NoInt();
         }
         public IntOption add(SomeInt toAdd) {
-            return this;
+            return new NoInt();
         }
 
     }

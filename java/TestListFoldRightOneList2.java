@@ -7,9 +7,9 @@ import static boomerang.example.TestUtils.*;
 public class TestListFoldRightOneList2 {
 
     public static void main (String... args) {
-        IntOption list_elm = new SomeInt(1){};
+        IntOption list_elm = new SomeInt(1);
 
-        IntOption acc_1 = new SomeInt(0){};
+        IntOption acc_1 = new SomeInt(0);
         IntOption acc_2 = new NoInt();
         int len = 5;
 
