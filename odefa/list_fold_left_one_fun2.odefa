@@ -1,27 +1,29 @@
-# this test illustrates that when list_fold is ran on two different lists
+# This test illustrates that when list_fold_left is ran on two dynamically created lists
 # with the same function, kPLUME will be confused but SPLUME will not.
-
-# splume concludes that the value of list_2 might be an empty list - hence why
-# the value of list_fold_go_2 is a bit conflated here as well.
 
 zero = 0;
 one = 1;
 
-# this function assumes that accumulator and int have the same type,
-# and either they are int or bool.
+# This function checks whether the accumulator and the list item are integers;
+# if both are, add them together. If one of them isn't an int, return empty
+# set to signify type error
 fun_1 = fun accumulator ->
 (
   blub_0 = fun item ->
   (
-    fun_1_res = accumulator~int?
-             fun match_int -> (res_match_int = accumulator + item;):
-             fun antimatch_int -> (res_antimatch_int = accumulator or item;);
+    fun_1_res = item~int?
+             fun match_int ->
+                (res_match_int = accumulator~int?
+                  fun acc_match_int -> (correct_type = accumulator + item) :
+                  fun acc_antimatch_int -> (wrong_type = {};)
+                ):
+             fun antimatch_int -> (res_antimatch_int = {};);
   );
 );
 
-
-# function that generates a list, taking in itself (to recurse),
+# A function that generates a list, taking in itself (to recurse),
 # the element that goes into the list, and how long the list is
+
 list_maker = fun lm_self ->
 (
   blub_1 = fun element ->
@@ -41,7 +43,26 @@ list_maker = fun lm_self ->
   );
 );
 
-# The equivalent of a List.fold function
+list_maker_2 = fun lm_self_2 ->
+(
+  blub_1_2 = fun element_2 ->
+  (
+    blub_2_2 = fun length_2 ->
+    (
+      is_zero_2 = length_2 == zero;
+      list_so_far_2 = is_zero_2~true?
+      fun tru_2 -> (empty_2 = {empty = zero}):
+      fun fal_2 -> (lm_self2_part1_2 = lm_self_2 lm_self_2;
+                  lm_self2_part2_2 = lm_self2_part1_2 element_2;
+                  length_of_rest_2 = length_2 - one;
+                  rest_2 = lm_self2_part2_2 length_of_rest_2;
+                  new_list_2 = {head = element_2, tail = rest_2};
+      );
+    );
+  );
+);
+
+# The equivalent of a List.fold_left function
 list_folder = fun lf_self ->
 (
   blub_3 = fun the_function ->
@@ -68,40 +89,21 @@ list_folder = fun lf_self ->
   );
 );
 
-# please don't ask me why this exists.
-list_accessor = fun la_self ->
-(
-  blob0 = fun la_list ->
-(
-  blob1 = fun la_num ->
-  (
-    found = la_num == zero;
-    search = found~true?
-             fun done -> (access_res = la_list.head;
-             ):
-             fun not_done -> (
-              la_next = la_self la_self;
-              la_list_tail = la_list.tail;
-              la_next_with_list = la_next la_list_tail;
-              next_num = la_num - one;
-              la_go = la_next_with_list next_num;
-             );
-
-  );
-);
-);
-
 elm_int = 1;
 elm_bool = true;
 acc1 = 0;
-acc2 = false;
+acc2 = 1;
 len = 5;
 
 list_maker_semi_real = list_maker list_maker;
+list_maker_semi_real_2 = list_maker_2 list_maker_2;
 list_maker_for_int = list_maker_semi_real elm_int;
-list_maker_for_bool = list_maker_semi_real elm_bool;
-list_1 = list_maker_for_int len;
-list_2 = list_maker_for_bool len;
+list_maker_for_bool = list_maker_semi_real_2 elm_bool;
+
+# list_1 is a list of booleans
+list_1 = list_maker_for_bool len;
+# list_2 is a list of integers
+list_2 = list_maker_for_int len;
 
 # pass fold into itself
 list_fold = list_folder list_folder;
@@ -112,11 +114,11 @@ list_fold_w_fun = list_fold fun_1;
 # pass the accumulator that corresponds with the first list with the fun
 list_fold_w_acc_1 = list_fold_w_fun acc1;
 
-# pass the integer list into list_fold
+# pass the boolean list into list_fold; should produce an empty set
 list_fold_go_1 = list_fold_w_acc_1 list_1;
 
 # pass the corresponding accumulator with the second list
 list_fold_w_acc_2 = list_fold_w_fun acc2;
 
-# pass the boolean list into list_fold
+# pass the integer list into list_fold; should produce an integer result
 list_fold_go_2 = list_fold_w_acc_2 list_2;
