@@ -5,7 +5,7 @@ import java.util.function.Function;
 
 import static boomerang.example.TestUtils.*;
 
-public class TestListFoldLeftOneList {
+public class TestListFoldLeftOneList2 {
 
     public static void main(String... args) {
         int list_elm_val = 1;
@@ -20,7 +20,7 @@ public class TestListFoldLeftOneList {
         Fun1 fun_1 = new Fun1();
         Fun2 fun_2 = new Fun2();
 
-        IntOption lf_result = listFoldLeft(fun_1, acc_2, list_1);
+        IntOption lf_result = listFoldLeft(fun_1, acc_1, list_1);
 
         IntOption lf_result_2 = listFoldLeft(fun_2, acc_2, list_1);
 
@@ -71,4 +71,6 @@ public class TestListFoldLeftOneList {
 
 
 }
+
+
 
